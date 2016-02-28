@@ -1,0 +1,6 @@
+[package]
+name = "gameoflife"
+version = "0.1.0"
+authors = ["Björn Mosler <dev@bjoern.mosler.ch>"]
+
+[dependencies]
