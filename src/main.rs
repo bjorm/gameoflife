@@ -73,9 +73,9 @@ fn count_neighbours_alive(origin_row: usize, origin_col: usize, cells: &CellMap)
     let size = cells.len();
     let valid_indices = get_valid_indices(origin_row, origin_col, size);
     let alive_neighbours = valid_indices.into_iter()
-        .map(|i| cells[i.0][i.1])
-        .filter(|state| *state == CellState::Alive)
-        .collect::<Vec<CellState>>();
+        .map(|(row, col)| cells[row][col])
+        .filter(|&state| state == CellState::Alive)
+        .collect::<Vec<_>>();
     
     alive_neighbours.len()
 }
@@ -93,17 +93,17 @@ fn get_valid_indices(origin_row: usize, origin_col: usize, size: usize) -> Vec<C
     ];
     
     indices.iter()
-        .filter(|t| !t.0.is_none() && !t.1.is_none())
-        .map(|t| (t.0.unwrap(), t.1.unwrap()))
-        .collect::<Vec<Coord>>()
+        .filter(|&&(row, col)| row.is_some() && col.is_some())
+        .map(|&(row, col)| (row.unwrap(), col.unwrap()))
+        .collect::<Vec<_>>()
 }
 
 fn checked_increment(index: usize, size: usize) -> Option<usize> {
     if index + 1 == size {
-        return None
-    }    
-
-    Some(index + 1)
+        None
+    } else { 
+        Some(index + 1)
+    }
 }
 
 impl fmt::Display for GameState {
@@ -113,7 +113,7 @@ impl fmt::Display for GameState {
         for row in self.cells.iter() {
             for cell in row.iter() {
                 let cell_icon = match *cell {
-                    CellState::Alive => 'x',
+                    CellState::Alive => 'o',
                     CellState::Dead => ' ',
                 };
                 printable.push(cell_icon);
